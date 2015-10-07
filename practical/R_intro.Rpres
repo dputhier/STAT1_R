@@ -1,0 +1,320 @@
+Introduction au logiciel d’analyse statistique R
+========================================================
+author: Denis Puthier
+date: '`r Sys.Date()`'
+transition: rotate
+transition-speed: fast
+
+
+Installer R
+========================================================
+
+  * Pour installer R aller sur le [CRAN](https://cran.r-project.org/).
+  * Pour lancer R sous **Windows**, cliquez, sur le raccourci présent sur le
+bureau. 
+  * Sous **Linux/Mac OSX**, tapez "R" dans un terminal.
+  * On conseille l'utilisation de [RStudio](https://www.rstudio.com/) pour un environnement plus convivial .
+
+
+Premiers pas
+
+
+
+  * R est un langage basé sur des **objets** 
+    * vector, matrix, data.frame, list, factor... 
+  * Nous reviendrons sur cette notion importante plus tard.
+
+
+
+
+Création d'un objet.
+============================================================
+
+  * Pour commencer, créons un objet simple de type “vecteur” qui contiendra une valeur numérique.
+
+```{r}
+x <- 15
+print(x) 
+show(x)
+x
+```
+
+Opérateur d'assignation
+============================================================
+
+  * L’opérateur d’assignation **=** peut se substituer à l’operateur **<-**
+  * Cependant l’opérateur **<-** est très recommandé.
+  * Le code pourra être commenté a l’aide du caractère **#**. 
+    * Toute commande à la suite de ce caractère ne sera pas interprétée.
+
+```{r}
+x = 23
+# x <- 32
+x
+```
+
+Plusieurs instructions sur une ligne.
+============================================================
+
+Les instructions peuvent être séparées par un retour à la ligne ou par
+le caractère **;**.
+
+```{r}
+x <- 12; y <- 13
+cat(x) # print(x)
+cat(y) # print(y)
+```
+
+
+Les objets sont stockés en mémoire
+============================================================
+
+  * Les objets créés sont stockés dans la mémoire vive de l’ordinateur 
+    * Ils ne sont pas, à ce stade, stockés sur le disque). 
+  * On peut **lister** les objets disponibles en mémoire avec la fonction **ls**. 
+  * Si vous quittez R ces objets seront détruits. 
+  * Une autre méthode pour les détruire consiste à utiliser la fonction **rm** (**remove**).
+  
+```{r}
+ls()
+rm(list=ls())
+```
+
+Fonctions. Informations de base sur les objets
+============================================================
+
+  * Nous venons de construire des vecteurs (“vector” pour R) contenant des données numériques.
+  * Nous avons, par ailleurs utilisé les fonctions **ls** et **rm**. 
+  * Dans R, on peut appeler des fonctions pour interroger des objets et réaliser des actions à partir de ceux-ci. 
+    * Les fonctions se présentent sous la forme suivante:
+
+```
+# Arg1 et arg2 (...) correspondent au noms des arguments
+# a et b correspondent aux objets que l’on souhaite passer à la fonction
+
+nomdelafonction(arg1= a, arg2= b,...)
+```
+
+Exemple d'utilisation de fonctions
+============================================================
+
+  * Ex: utilisation de la fonction **c()** (**combiner**).
+    * Combiner des valeurs (e.g numériques) dans un vecteur (vector)
+
+```{r}
+y <- c(-50, 1:8, 70) ; print(y)
+length(y)
+is(y)
+```
+
+
+Exemple d'utilisation de fonctions
+============================================================
+
+  * Ex: utilisation de la fonction **mean** 
+    * Calculer d'une moyenne tronquée 
+    * Notez que les noms des l’arguments peuvent être abbrégés (si abréviation non ambigue) voire omis (si dans l'ordre attendus).
+
+```{r}
+mean(y)
+mean(y, trim = 0.2) # 10% deleted at each ends
+mean(y, tr = 0.2)
+mean(y, 0.2)
+```
+
+
+
+Les modes
+==============
+
+  * Quatre modes: "numérique"", "caractère"", "logique"","complexe". 
+  * On peut stocker ces variables dans des vecteurs en utilisant la fonction c (combine) . 
+    * Attention, un vecteur n’accepte qu’un seul type de mode.
+
+```{r}
+noms <-  c("celine", "alain", "robert") 
+class(noms) # is(noms) 
+logic <- c(TRUE, FALSE, TRUE) # logic <- c(T, F, T)
+class(logic) # is(logic)
+```
+
+
+
+L’aide dans R
+=================
+
+  * La fonction **help()**.
+    * Elle peut aussi être appelée à l’aide du caractère "?". 
+    * Elle permet d’appeler l’aide sur une fonction donnée. 
+    
+```{r}
+help(mean) # ?mean
+```
+  
+  * La fonction **help.search()**. 
+    * Elle permet de chercher un terme donné dans les fichiers d’aide des fonctions.
+  * La fonction **apropos()**.
+    * Renvoie l’ensemble des fonctions dont le nom contient la chaîne de caractères recherchée
+
+
+Les objets de type vecteur : création
+=====================================
+
+  * Les fonctions **c()**, **rep()** et **seq()**.
+
+```{r}
+x <- 1:10 # une suite d'entiers
+y <- c(2, 5, 7) # combiner 2 5 et 7 dans un vecteur
+z <- rep(x, times = 5) # répéter x cinq fois. 
+```
+
+Création de vecteurs avec des valeurs pseudo-aléatoires.
+========================================================
+  
+  * On peut utiliser par exemple:
+  
+    * **rnorm()**: random normal.
+    * **runif()**: random uniform.
+    * **rpois**: random poisson.
+    * **rhyper**: random hypergeometric.
+    * ...
+
+Exemple: générer des distributions
+========================================================
+  
+```{r,fig=FALSE, echo=TRUE, eval=FALSE}
+par(mfrow=c(2, 2))
+
+x <- rnorm(n=1000, mean=10, sd=2)
+hist(x, main="Distribution normale (m=10, sd=2)")
+
+x <- runif(n=1000, min = 10, max=20)
+hist(x, main="Distribution uniforme (min=10, max=20)")
+
+x <- rpois(1000, lambda=10)
+hist(x, main="distribution de Poisson (lambda=10)")
+
+x <- rhyper(nn=1000, m=100, n=100, k = 20)
+hist(x, main="Distribution hypergéométrique (m=100, n=100, k = 20)")
+
+par(mfrow=c(1, 1))
+
+  
+```
+
+Exemple: générer des distributions
+========================================================
+
+```{r,fig=TRUE, echo=FALSE}
+par(mfrow=c(2, 2))
+x <- rnorm(n=1000, mean=10, sd=2)
+hist(x, main="Distribution normale (m=10, sd=2)")
+
+x <- runif(n=1000, min = 10, max=20)
+hist(x, main="Distribution uniforme (min=10, max=20)")
+
+x <- rpois(1000, lambda=10)
+hist(x, main="distribution de Poisson (lambda=10)")
+
+x <- rhyper(nn=1000, m=100, n=100, k = 20)
+hist(x, main="Distribution hypergéométrique (m=100, n=100, k = 20)")
+
+par(mfrow=c(1, 1))
+```
+
+Opérations de tri et de randomisation sur les vecteurs
+========================================================
+
+  * On pourra faire des opérations simples de tri ou de randomisation sur les vecteurs. 
+  * Notez que, dans l’exemple suivant, quand l’argument **replace** est positionné sur TRUE, le tirage aléatoire est effectué avec remise.
+
+```{r}
+x <- 1:10 
+sort(x, decreasing = TRUE)
+sample(x)
+sample(x, replace = TRUE)
+````
+
+
+Indexation des vecteurs
+=============================
+
+  Pour interroger les éléments d’un vecteur on utilisera:
+  
+    1. Un vecteurs d’indices (ie; de positions)
+      * les positions sont notées de 1 à n (taille du vecteur).
+    2. Un vecteur logique 
+    3. les noms des éléments du vecteur.
+
+
+Indexation des vecteurs (position)
+=============================
+
+  * Exemple:
+
+```{r}
+x <- c(-2, 4, -5, 1, 7)
+x[3]  # position 3
+x[3:5] # position 3 à 5
+x[c(2,5)] # position 2 et 5
+x[-3] # x sans la position 4 (-5)
+```
+
+Indexation des vecteurs (logique)
+=============================
+
+  * Exemple:
+
+```{r}
+x <- c(-2, 4, -5, 1, 7)
+x < 4
+x[x < 4] # renvoie les positions pour lesquelles le test est vrai
+x[x < 4 & x > 0] # & correspond au et logique
+x[x < 4 | x ==  7] # | correspond au ou logique, == à l'opérateur d'égalité
+
+```
+
+Indexation des vecteurs (noms)
+=============================
+
+  * Exemple:
+
+```{r}
+x <- c(-2, 4, -5, 1, 7)
+names(x) <- letters[1:length(x)]
+x
+x["a"]
+x[c("a", "d")]
+```
+
+
+Lire un fichier
+=================
+* Fonction read.table
+
+  * Cette commande est incontournable 
+    * Permettra la lecture de tableaux de données.
+      * locaux ou distants (htttp, ftp)
+    * Cette fonction renvoie un objet de type **data.frame**.
+    * Contient de nombreux arguments qui permettent de paramètrer la lecture des données. 
+    * Tapez **?read.table** pour avoir accès à l’aide sur cette fonction.
+
+Lire un fichier
+=================
+Fonction read.table, arguments importants
+
+  * **file**: le nom du fichier
+  * **header**: la première ligne correspond aux noms des colonnes.
+  * **skip**: Passer les n premières lignes avant la lecture.
+  * **sep**: le type de séparateurs de colonnes (e.g "\t")
+  * **row.names**: la colonne contenant les noms des lignes (e.g, 1)
+  * **quote**: le délimiter de champs (à positionner plutôt sur "")
+
+Lire un fichier
+=================
+Exercice:
+
+  * Lisez le fichier à l'adresse suivante:
+  
+
+
