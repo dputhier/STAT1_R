@@ -309,13 +309,141 @@ Fonction read.table, arguments importants
   * **sep**: le type de séparateurs de colonnes (e.g "\t")
   * **row.names**: la colonne contenant les noms des lignes (e.g, 1)
   * **quote**: le délimiter de champs (à positionner plutôt sur "")
+  * **comment.char**: par défaut "#". Le texte précédé de ce caractère n'est pas lu. A utiliser pour des lignes de commentaires.
 
 Lire un fichier
 =================
 
   * Exercice:
 
-    * Lisez le fichier à l'adresse suivante:
-    http://dputhier.github.io/STAT1_R.
+    * Lisez le fichier à l'adresse suivante à l'aide de la fonction **read.table**.
+    http://dputhier.github.io/STAT1_R/data/yeast_up500_6nt-1str-ovlp_MET_vs_all_c125.tsv
+    
+Lire un fichier
+=================
+
+```{r}
+base.dir <- "http://dputhier.github.io/STAT1_R/data"
+file.name <- "yeast_up500_6nt-1str-ovlp_MET_vs_all_c125.tsv"
+yeast.df <- read.table(file.path(base.dir,file.name), 
+                sep="\t", 
+                header=T, 
+                row=1)
+class(yeast.df)
+````
+
+L'objet data.frame
+=================
+
+  * C'est une matrice dont chacune des colonnes accepte un mode différent (character, numeric, boolean,...)
+  * On peut indexer un data.frame en interrogeant les lignes et colonnes
+    
+```
+mon.data.frame[ligne, colonne]
+```
+
+  * On pourra utiliser l'indexation par nom, par position ou l'indexation logique. 
+  * Pour les noms de colonne, on pourra utiliser l'indexation à l'aide de l'opérateur dollar ($).
+  
+Indexation de L'objet data.frame
+===============================
+
+```{r, echo=TRUE, eval=TRUE}
+yeast.df[1,] # première ligne
+yeast.df[1:10, 1:2] # 10 premières lignes des colonnes 1 et 2
+yeast.df[c(1,3), c(1:5)] # lignes 1 et 3 des colonnes 1 et 5
+yeast.df[ ,"MET_occ"] # la colonne MET_occ
+yeast.df$MET_occ # la colonne MET_occ
+yeast.df$MET_occ[1:3] # les trois premiers éléments de la colonne MET_occ
+````
+
+Indexation de L'objet data.frame
+===============================
+
+```{r, echo=TRUE, eval=TRUE}
+yeast.df[1,] # première ligne
+yeast.df[1:10, 1:2] # 10 premières lignes des colonnes 1 et 2
+yeast.df[c(1,3), c(1:5)] # lignes 1 et 3 des colonnes 1 et 5
+yeast.df[ ,"MET_occ"] # la colonne MET_occ
+yeast.df$MET_occ # la colonne MET_occ
+yeast.df$MET_occ[1:3] # les trois premiers éléments de la colonne MET_occ
+````
+
+Indexation de L'objet data.frame
+===============================
+
+```{r, echo=TRUE, eval=FALSE}
+yeast.df[1,] # première ligne
+yeast.df[1:10, 1:2] # 10 premières lignes des colonnes 1 et 2
+yeast.df[c(1,3), c(1:5)] # lignes 1 et 3 des colonnes 1 et 5
+yeast.df[ ,"MET_occ"] # la colonne MET_occ
+yeast.df$MET_occ # la colonne MET_occ
+yeast.df$MET_occ[1:3] # les trois premiers éléments de la colonne MET_occ
+````
+
+Calculer le nombre d'occurrences des k-mers
+===========================================
+
+  * Demander le l'aide sur la fonction **sum()**.
+  * Créez une variable sum_all et sum_met contenant le nombre total d'occurrences des k-mers dans les promoteurs de classe MET ou ALL.
+  
+Calculer le nombre d'occurrences des k-mers
+============================================
+  
+```{r, echo=TRUE}
+sum_met <- sum(yeast.df$MET_occ)
+print(sum_met)
+sum_all <-  sum(yeast.df$all_occ)
+print(sum_all)
+````
+
+Boucles for et vectorisation
+===========================
+
+  * Les boucles for
+  * La syntaxe des boucles for est la suivante:
+
+```
+for( i in vec){
+  faireQuelqueChose(i)
+  ...
+} 
+```
+
+  * Considérons l’addition de deux vecteurs 
+
+```{r}
+  x <- 1:10 
+  y <- -x 
+  z <- vector() 
+  
+  for (i in 1:length(x)){
+    z[i] <- x[i] + y[i]
+  } 
+````
+
+La vectorisation
+===========================
+  * Dans R, les boucles peuvent de manière générale être évitées 
+  * Caractéristique du langage R
+    * la vectorisation. La structure vectorielle rend les boucles implicites dans les expressions. 
+
+```{r}
+z <- x + y
+z
+# Autres exemples
+x/2
+x^2
+
+```
+
+Calcule de la fréquence de chaque mots dans la classe MET et la class ALL
+=========================================================================
+
+  * En vous basant sur ce que nous venons de voir, calculez la fréquence de chaque mots dans la classe MET et la class ALL (variables )
+
+
+
+
 
 
