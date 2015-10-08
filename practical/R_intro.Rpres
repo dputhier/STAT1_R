@@ -755,6 +755,8 @@ Exemple, le k-mer  TTCACG
 plot(0:15, dpois(0:15, lambda = lambda), type="h", col="blue", lwd=4)
 points(4:15, dpois(4:15, lambda=lambda), type="h", lwd=4, col="red")
 ```
+
+
 Calcul de la p-valeur pour tous les mots
 =======================================
 
@@ -802,55 +804,51 @@ points(yeast.df$log_occ_ratio[to_point],
 text(yeast.df$log_occ_ratio[to_point], -log10(pois.p.val)[to_point], lab=rownames(yeast.df)[to_point], cex=0.7, pos=2)
 ```
 
-Calcul de la p-valeur en utilisant un test hypergéométrique
-========================================================
 
-  * On peut modéliser le problème à l'aide d'un test hypergéométrique.
-  * Pour chaque k-mer on considère:
-    * $N$ le nombre de mots (la taille de l'urne, le nombre de promoteurs).
-    * Un tirage de taille $k=19$ (gènes régulés par la méthionine) éléments dans une urne contenant:
+Calcul de la p-valeur en utilisant un test hypergéométrique 
+========================================================
+  * on peut adopter le point de vue des positions
+    * Pour chaque k-mer on considère:
+    * $N$ l'univers (la taille de l'urne, le nombre de position).
       * m boules blanches (marquées).
-        * i.e : promoteurs contenant l'hexamère.
+        * i.e : les positions/mots des promoteurs MET.
       * n boules noires (non marquées).
-        * i.e : promoteurs ne contenant le l'hexamère.
-  * On cherche à connaître la probabilité d'obtenir $X=x$ boules marquées.
+        * i.e : les positions ne ne tombant pas dans les promoteurs MET.
+    * Un tirage de taille $k$ (toutes les occurrences du k-mer k dans les promoteurs):
+
+  * On cherche à connaître la probabilité d'obtenir $X=x$ boules marquées (positions tombant dans les promoteurs MET)
   
 Exemple, le k-mer  TTCACG
 ========================================================
 
 ```{r}
 # Pour le hexamer TTCACG
-N <- 5880
-m <- 407 # yeast$all_mseq 
-n <- N -m
-k <- 19
-x <- 6 # yeast$MET_mseq
+N <- sum_all
+m <- sum_met
+n <- N - m
+k <- yeast.df["TTCACG", "all_occ"] # 424
+x <- yeast.df["TTCACG", "MET_occ"] # 7
 
 # La p-valeur est donnée par:
 phyper(q=x-1, m = m, n=n, k=k, lower.tail = FALSE)
 ```
-  
 
-Calcul 'gene-wise'
-==================
-
-  * Calculez la p-valeur du test hypergéométrique pour tous les gènes.
-  
-Calcul 'gene-wise'
+Calcul 'gene-wise' 
 ==================
 
 ```{r}  
-N <- 5880
-k <- 19
+N <- sum_all
+m <- sum_met
 
-hyper.p.val <- vector()
+hyper.p.val.2 <- vector()
 for(i in 1:nrow(yeast.df)){
-  m <- yeast.df[i, "all_mseq"]
-  n <- N - m
-  x <-  yeast.df[i, "MET_mseq"]
-  hyper.p.val[i] <- dhyper(x=x-1, m = m, n=n, k=k )
+  k <- yeast.df[i, "all_occ"]
+  x <- yeast.df[i, "MET_occ"] 
+  hyper.p.val.2[i] <- phyper(q=x-1, m = m, n=n, k=k, lower.tail = FALSE)
 }
 
 yeast.df$hyper.p.val <- hyper.p.val
-head(yeast.df[order(yeast.df$hyper.p.val), c("log_occ_ratio","hyper.p.val")], n=3)
 ```
+
+
+  
